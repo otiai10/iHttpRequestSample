@@ -13,6 +13,23 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    
+    // (1) URLをつくる（localhostだとダメっぽかったので、適当につくったHTTPサーバ）
+    NSURL *url = [NSURL URLWithString:@"http://otiai10.com:8080"];
+    // (2) Requestをつくる
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    // (3) メソッドを指定
+    [request setHTTPMethod:@"POST"];
+    // (4) リクエストボディを指定
+    [request setHTTPBody:[@"message=てすてすこちらiOSクライアント" dataUsingEncoding:NSUTF8StringEncoding]];
+    // (5) Connectionをつくる
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        if (connectionError != nil) {
+            NSLog(@"%@", connectionError);
+            return;
+        }
+        NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    }];
     return YES;
 }
 							
